@@ -1,0 +1,42 @@
+body {
+  text-align: center;
+}
+.game {
+  margin: 5px;
+}
+#para {
+  height: 50px;
+  width: 200px;
+  background-color: rgb(229, 255, 0);
+  color: #000;
+  align-items: center;
+  text-align: center;
+  align-content: center;
+  align-self: center;
+  margin: auto;
+  margin-top: 20px;
+}
+#user-choice {
+  font-weight: bold;
+}
+#computer-choice {
+  font-weight: bold;
+}
+h1 {
+  border: 2px solid black;
+  width: 320px;
+  margin: auto;
+  margin-bottom: 20px;
+}
+.image {
+  height: 90px;
+  width: 90px;
+  margin: 10px;
+}
+.image-button {
+  border: none;
+  background-color: lightblue;
+  cursor: pointer;
+  margin: 5px;
+  border-radius: 10px;
+}
