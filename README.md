@@ -151,6 +151,16 @@ http://localhost:9090
 
 ---
 
+
+
+
+
+
+
+
+
+
+*********maven
 ### *2. mvn CLEAN package, but getting unknown lifecycle phase error – 2M*
 
 If you typed:
@@ -357,3 +367,325 @@ git commit -m "Add pom.xml"
 git branch -M main
 git remote add origin https://github.com/yourusername/yourrepo.git
 git push -u origin main
+
+
+
+
+
+
+
+
+
+
+
+
+
+**********
+
+docker docker compose maven
+
+You cloned from a different remote, want to push to new one. Configure. – 3M
+git remote set-url origin https://github.com/username/repo.git
+
+. Delete branch patient from remote repo. – 2M
+git push origin --delete patient
+
+Apply a .patch file from teammate and include in history. – 3M
+git apply file.patch
+git add .
+git commit -m "Applied patch from teammate"
+
+If you want last 3 commits:
+
+git format-patch -3 HEAD
+
+If you want commits from a specific commit to now:
+
+git format-patch <commit_id>
+
+Q4: Docker Containerization for Maven Application – 20 Marks
+
+Task: Containerize your Maven project using Docker.
+
+You are given these instructions:
+
+Write a Dockerfile for the Maven project.
+
+Ensure it copies the WAR/JAR and runs on Tomcat (or relevant base image).
+
+Step 1: Dockerfile to build the Maven project
+
+Here’s a sample Dockerfile for your HospitalMgmtSystem:
+
+# Stage 1: Build the Maven project
+FROM maven:3.8.6-eclipse-temurin-17 AS build
+
+# Set working directory inside the container
+WORKDIR /app
+
+# Copy pom.xml and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copy source code and build
+COPY src ./src
+RUN mvn clean package
+
+# Stage 2: Run the WAR file using Tomcat
+FROM tomcat:9.0.73-jdk17
+
+# Remove default webapps
+RUN rm -rf /usr/local/tomcat/webapps/*
+
+# Copy the WAR from previous stage
+COPY --from=build /app/target/HospitalMgmtSystem.war /usr/local/tomcat/webapps/ROOT.war
+
+# Expose Tomcat port
+EXPOSE 8080
+
+# Start Tomcat
+CMD ["catalina.sh", "run"]
+
+
+✅ Notes:
+
+Multi-stage build: First stage builds your Maven project, second stage runs it on Tomcat.
+
+WAR file name should match the finalName in pom.xml (HospitalMgmtSystem.war).
+
+Expose port 8080 (you can map it to host later).
+
+Step 2: Build Docker image
+
+Command to build image:
+
+docker build -t hospital-mgmt .
+
+
+-t hospital-mgmt → gives your image a name.
+
+Step 3: List all available Docker images
+
+Command:
+
+docker images
+
+Step 4: Run container with port mapping
+docker run -d -p 9090:8080 --name hospital-container hospital-mgmt
+
+
+Maps host 9090 → container 8080
+
+-d → run in background
+
+Step 5: Verify container running
+docker ps
+
+
+Open browser: http://localhost:9090 → should show your app.
+
+Step 6: Tag and push image to DockerHub
+docker tag hospital-mgmt yourusername/hms:latest
+docker push yourusername/hms:latest
+
+Step 7: Inspect logs if container crashes
+docker logs hospital-container
+
+
+Shows errors to debug.
+
+Step 8: Connect inside running container (interactive)
+docker exec -it hospital-container /bin/bash
+
+
+Lets you check files, run commands inside container.
+
+Step 9: Stop and remove containers
+docker stop hospital-container
+docker rm hospital-container
+
+
+Useful if you forgot port mapping or need to rerun correctly.
+
+Step 10: List removed containers
+docker ps -a -f "status=exited"
+
+
+Do you want me to continue with *Q5: Docker Compose – 10M* next?
+
+*\\\\*docker compose
+
+Example Docker Compose File (Simple)
+Here’s a basic example of a Docker Compose file that runs WordPress and MySQL together:
+version: '3.8' # Docker Compose file format version
+
+services:
+wordpress: # WordPress service
+image: wordpress:latest
+ports: - "8080:80" # Map port 80 of the container to port 8080 of the host
+environment:
+WORDPRESS_DB_HOST: db:3306 # Database host
+WORDPRESS_DB_USER: wordpress
+WORDPRESS_DB_PASSWORD: wordpress
+WORDPRESS_DB_NAME: wordpress
+depends_on: - db # Ensures the db service starts first
+
+db: # MySQL service
+image: mysql:5.7
+environment:
+MYSQL_ROOT_PASSWORD: rootpassword
+MYSQL_DATABASE: wordpress
+MYSQL_USER: wordpress
+MYSQL_PASSWORD: wordpress
+
+How to Run It
+To run a multi-container setup like the one above:
+
+1. Save the file as docker-compose.yml.
+   Or
+   docker-compose.yaml
+2. To Start the compose
+
+docker-compose up –d
+
+3. To stop the containers
+   docker-compose down
+4. To scale the container
+
+docker-compose up --scale <service name>=2 -d
+
+1.Define and run multiple interdependent services
+
+Task:
+I. Create a new folder compose-lab
+Inside it, create a file docker-compose.yml with the following content:
+
+version: "3.9"
+services:
+web:
+image: nginx:latest
+ports: - "8080:80"
+
+db:
+image: postgres:15
+environment:
+POSTGRES_USER: demo
+POSTGRES_PASSWORD: demo
+POSTGRES_DB: demo_db
+
+II. Run the setup:
+
+docker compose up -d
+
+III. Open your browser and visit: http://localhost:8080.
+
+IV. Expected Output:
+
+Nginx welcome page is displayed.
+db container runs in the background.
+
+2.Write and interpret docker-compose.yml files
+Task:
+I. Modify docker-compose.yml to add a Redis cache:
+
+redis:
+image: redis:alpine
+
+II. Add a depends_on so web waits for Redis:
+web:
+image: nginx:latest
+ports: - "8080:80"
+depends_on: - redis
+
+III. Restart the setup:
+docker compose up -d
+docker compose ps
+
+IV. Expected Output:
+
+Three services (web, db, redis) are listed as running.
+
+3.Deploy across different machines
+Task:
+I. Zip your compose-lab folder.
+
+Transfer it to another machine with Docker Compose installed.
+
+II. Run:
+docker compose up -d
+
+Check that Nginx and Postgres work there as well.
+
+III. Expected Output:
+The same services run on the new machine without changes.
+
+4.Networking and persistent storage
+Task:
+I. Update your docker-compose.yml to add a custom network and volume:
+
+networks:
+app-net:
+
+volumes:
+db-data:
+
+services:
+web:
+image: nginx:latest
+ports: - "8080:80"
+networks: - app-net
+depends_on: - db
+
+db:
+image: postgres:15
+environment:
+POSTGRES_USER: demo
+POSTGRES_PASSWORD: demo
+POSTGRES_DB: demo_db
+volumes: - db-data:/var/lib/postgresql/data
+networks: - app-net
+
+II. Run:
+docker compose up -d
+III. Insert some data into Postgres (optional with psql).
+IV. Remove containers:
+docker compose down
+V. Start again:
+docker compose up -d
+VI. Expected Output:
+Database data persists across restarts.
+Services communicate via the app-net network using service names.
+
+5.Faster iteration during development
+Task:
+I. Create a simple Flask app in app.py:
+
+from flask import Flask
+app = Flask(*name*)
+@app.route("/")
+def home():
+return "Hello from Flask + Docker!"
+if *name* == "*main*":
+app.run(host="0.0.0.0", port=5000)
+
+II. Add a Dockerfile in the same folder:
+
+FROM python:3.10-slim
+WORKDIR /app
+COPY app.py /app/
+RUN pip install flask
+CMD ["python", "app.py"]
+
+III. Update docker-compose.yml:
+web:
+build: .
+ports: - "5000:5000"
+depends_on: - db
+IV. Run:
+docker compose up --build
+Visit http://localhost:5000.
+Change the return text in app.py (e.g., "Hello Docker Compose!").
+V. Rebuild:
+docker compose up --build
+VI. Expected Output:
+New message appears instantly after rebuild.
