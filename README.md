@@ -83,6 +83,32 @@ git remote remove origin
 git remote add origin https://github.com/KusumaSrivalli/simple-java-maven-app.git
 git push -u origin main
 
+
+
+
+You cloned from a different remote, want to push to new one. Configure. – 3M
+git remote set-url origin https://github.com/username/repo.git
+
+. Delete branch patient from remote repo. – 2M
+git push origin --delete patient
+
+Apply a .patch file from teammate and include in history. – 3M
+git apply file.patch
+git add .
+git commit -m "Applied patch from teammate"
+
+If you want last 3 commits:
+
+git format-patch -3 HEAD
+
+If you want commits from a specific commit to now:
+
+git format-patch <commit_id>
+
+
+
+
+
 **Dockerfile**
 FROM openjdk:17-jdk-slim
 WORKDIR /app
@@ -175,8 +201,8 @@ bash
 mvn CLEAN package
 
 
-it fails ❌ because Maven is *case-sensitive*.
-✅ Correct command:
+it fails  because Maven is *case-sensitive*.
+ Correct command:
 
 bash
 mvn clean package
@@ -224,7 +250,7 @@ xml
 </build>
 
 
-👉 Set 17 (or supported version).
+ Set 17 (or supported version).
 
 ---
 
@@ -238,8 +264,8 @@ xml
 </dependency>
 
 
-❌ Issue: Wrong groupId (SE is invalid).
-✅ Correct dependency:
+ Issue: Wrong groupId (SE is invalid).
+ Correct dependency:
 
 xml
 <dependency>
@@ -258,7 +284,7 @@ xml
   hospitalmgmtsystem-0.0.1-SNAPSHOT.war
 * But expected: HospitalMgmtSystem.war.
 
-✅ Fix in pom.xml:
+ Fix in pom.xml:
 
 xml
 <build>
@@ -270,7 +296,7 @@ Now output will be: HospitalMgmtSystem.war.
 
 ---
 
-✔ That covers *Q2 fully (30M)*.
+ That covers *Q2 fully (30M)*.
 
 ---
 
@@ -390,24 +416,7 @@ git push -u origin main
 
 docker docker compose maven
 
-You cloned from a different remote, want to push to new one. Configure. – 3M
-git remote set-url origin https://github.com/username/repo.git
 
-. Delete branch patient from remote repo. – 2M
-git push origin --delete patient
-
-Apply a .patch file from teammate and include in history. – 3M
-git apply file.patch
-git add .
-git commit -m "Applied patch from teammate"
-
-If you want last 3 commits:
-
-git format-patch -3 HEAD
-
-If you want commits from a specific commit to now:
-
-git format-patch <commit_id>
 
 Q4: Docker Containerization for Maven Application – 20 Marks
 
@@ -453,7 +462,7 @@ EXPOSE 8080
 CMD ["catalina.sh", "run"]
 
 
-✅ Notes:
+ Notes:
 
 Multi-stage build: First stage builds your Maven project, second stage runs it on Tomcat.
 
