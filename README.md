@@ -35,6 +35,12 @@ git revert <commit>          # undo commit by creating new commit
 git log                     # show commit history
 git log --oneline --graph 
 
+git rm --cached filename
+git commit -m "Remove file from repo but keep locally"
+
+git revert <commit-hash>
+git push origin main
+
 
 **Step 1: Create a New Repository on GitHub**
 Go to GitHub.
